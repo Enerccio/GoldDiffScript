@@ -39,8 +39,14 @@ public class StatisticsGenerator {
 	}
 
 	public StatisticsGenerator generate() {
-		while (matches.size() < 50000)
-			getSomeMatches();
+		while (matches.size() < 50000){
+			try {
+				getSomeMatches();
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+			System.err.println(matches.size() + " of " + 50000);
+		}
 		summonersChecked.clear();
 		summonersCheckedKeys.clear();
 		return this;
@@ -54,7 +60,6 @@ public class StatisticsGenerator {
 				continue;
 			Match m = ms.getMatch();
 			
-			System.out.println("Gathering gold data for match " + m.getID());
 			MatchData md = new MatchData();
 			
 			Map<Integer, Integer> goldAt19 = new HashMap<Integer, Integer>();
@@ -97,13 +102,14 @@ public class StatisticsGenerator {
 				addSummoner(p.getSummonerID());
 			}
 			
-			System.out.println("Gathered gold data for match " + m.getID());
 			matches.put(m.getID(), md);
 		}
 		summonersChecked.put(sId, true);
 	}
 
 	private void addSummoner(long summonerID) {
+		if (summonersCheckedKeys.size() > 200000)
+			return;
 		summonersChecked.put(summonerID, false);
 		summonersCheckedKeys.add(summonerID);
 	}
